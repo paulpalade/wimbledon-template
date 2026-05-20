@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG Template Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="control-panel">
+            <h1>PNG Template Generator</h1>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="tournament-type">Tournament:</label>
+                    <select id="tournament-type">
+                        <option value="men">Men's Final</option>
+                        <option value="women">Women's Final</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="dropdown-a">Player 1:</label>
+                    <select id="dropdown-a">
+                        <option value="">Select Player 1</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="dropdown-b">Player 2:</label>
+                    <select id="dropdown-b">
+                        <option value="">Select Player 2</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="winner-select">Winner:</label>
+                    <select id="winner-select">
+                        <option value="left" selected>Left</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="numeric-input">Likelihood to win (0-100):</label>
+                    <input type="number" id="numeric-input" placeholder="Enter number" value="50" min="0" max="100">
+                </div>
+
+                <button id="render-btn" class="render-button">Render PNG</button>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <h2>Preview</h2>
+            <div class="canvas-wrapper">
+                <canvas id="preview-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden canvas for high-resolution export -->
+    <canvas id="export-canvas" style="display: none;"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>
