@@ -6,6 +6,7 @@ const CONFIG = {
     
     // Asset paths
     BACKGROUND_IMAGE: 'assets/background.png',
+    TOURNAMENTS_JSON: 'tournaments.json',
     
     // Font paths
     FONTS: {
@@ -14,45 +15,24 @@ const CONFIG = {
         semibold: 'assets/fonts/IBMPlexSans-SemiBold.ttf'
     },
     
-    // Tournament configurations
-    TOURNAMENTS: {
-        men: {
-            title: "Gentlemen's Singles Final",
-            players: [
-                { id: 'men-1', name: 'Novak Djokovic', country: 'SER', path: 'assets/men/Novak Djokovic.png' },
-                { id: 'men-2', name: 'Carlos Alcaraz', country: 'SPN', path: 'assets/men/Carlos Alcaraz.png' },
-                { id: 'men-3', name: 'Jannik Sinner', country: 'ITA', path: 'assets/men/Jannik Sinner.png' },
-                { id: 'men-4', name: 'Daniil Medvedev', country: 'RUS', path: 'assets/men/default.png' },
-                { id: 'men-5', name: 'Alexander Zverev', country: 'GER', path: 'assets/men/default.png' },
-                { id: 'men-6', name: 'Stefanos Tsitsipas', country: 'GRE', path: 'assets/men/default.png' }
-            ]
-        },
-        women: {
-            title: "Ladies' Singles Final",
-            players: [
-                { id: 'women-1', name: 'Naomi Osaka', country: 'JPN', path: 'assets/women/Naomi Osaka.png' },
-                { id: 'women-2', name: 'Aryna Sabalenka', country: 'BEL', path: 'assets/women/Aryna Sabalenka.png' },
-                { id: 'women-3', name: 'Amanda Anisimova', country: 'USA', path: 'assets/women/Amanda Anisimova.png' },
-                { id: 'women-4', name: 'Jessica Pegula', country: 'USA', path: 'assets/Jessica Pegula.png' },
-                { id: 'women-5', name: 'Elena Rybakina', country: 'KAZ', path: 'assets/women/default.png' },
-                { id: 'women-6', name: 'Ons Jabeur', country: 'TUN', path: 'assets/women/default.png' }
-            ]
-        }
-    },
+    // Tournament configurations (loaded from JSON)
+    TOURNAMENTS: {},
+
+    //8A3FFC. D2A106
     
     // Layout configuration for image positioning
     LAYOUT: {
-        title: { x: 1920, y: 105, fontSize: 50, color: '#000000', align: 'center', baseline: 'middle', font: 'semibold' },
-        imageA: { x: 259, y: 716, width: 1010, height: 1010, strokeColor: '#8A3FFC', strokeWidth: 16 },
-        imageB: { x: 2578, y: 716, width: 1010, height: 1010, strokeColor: '#D2A106', strokeWidth: 16 },
-        playerNameA: { x: 760, y: 1825, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
-        playerCountryA: { x: 760, y: 1905, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
-        playerNameB: { x: 3079, y: 1825, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
-        playerCountryB: { x: 3079, y: 1905, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
-        text: { x: 1920, y: 1240, fontSize: 218,  align: 'center', baseline: 'middle', font: 'regular' },
-        characterPercent: { x: 2070, y: 1260, fontSize: 128,  align: 'left', baseline: 'middle', font: 'light' },
-        arc: { x: 1920, y: 1215, radius: 350, strokeWidth: 30 },
-        triangle: { size: 90, offsetX: 440 }
+        title: { x: 1920, y: 187, fontSize: 51, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+        imageA: { x: 227, y: 595, width: 1022, height: 1022, strokeColor: '#8A3FFC', strokeWidth: 20 },
+        imageB: { x: 2602, y: 595, width: 1022, height: 1022, strokeColor: '#D2A106', strokeWidth: 20},
+        playerNameA: { x: 732, y: 1941, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+        playerCountryA: { x: 732, y: 2024, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+        playerNameB: { x: 3105, y: 1941, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+        playerCountryB: { x: 3105, y: 2024, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+        text: { x: 1910, y: 1120, fontSize: 218,  align: 'center', baseline: 'middle', font: 'regular', letterSpacing: -10},
+        characterPercent: { x: 2035, y: 1145, fontSize: 128,  align: 'left', baseline: 'middle', font: 'light' },
+        arc: { x: 1920, y: 1102, radius: 346, strokeWidth: 36 },
+        triangle: { size: 90, offsetX: 430, cornerRadius: 7 }
     }
 };
 
@@ -67,7 +47,12 @@ const state = {
     winner: 'left',
     loadedImages: {},
     fontsLoaded: false,
-    isInitializing: true
+    tournamentsLoaded: false,
+    isInitializing: true,
+    dropdownOptions: {
+        a: [],
+        b: []
+    }
 };
 
 // DOM elements
@@ -75,6 +60,12 @@ const elements = {
     tournamentType: document.getElementById('tournament-type'),
     dropdownA: document.getElementById('dropdown-a'),
     dropdownB: document.getElementById('dropdown-b'),
+    dropdownAInput: document.getElementById('dropdown-a-input'),
+    dropdownBInput: document.getElementById('dropdown-b-input'),
+    dropdownAList: document.getElementById('dropdown-a-list'),
+    dropdownBList: document.getElementById('dropdown-b-list'),
+    dropdownAContainer: document.querySelector('[data-dropdown="a"]'),
+    dropdownBContainer: document.querySelector('[data-dropdown="b"]'),
     winnerSelect: document.getElementById('winner-select'),
     numericInput: document.getElementById('numeric-input'),
     renderBtn: document.getElementById('render-btn'),
@@ -83,12 +74,32 @@ const elements = {
 };
 
 // Initialize the application
-function init() {
+async function init() {
+    await loadTournaments();
     loadFonts();
     populateDropdowns();
     setupEventListeners();
     preloadImages();
     // Don't call updatePreview here - let it be called after fonts and images load
+}
+
+// Load tournaments data from JSON file
+async function loadTournaments() {
+    try {
+        const response = await fetch(CONFIG.TOURNAMENTS_JSON);
+        if (!response.ok) {
+            throw new Error(`Failed to load tournaments: ${response.status} ${response.statusText}`);
+        }
+        CONFIG.TOURNAMENTS = await response.json();
+        state.tournamentsLoaded = true;
+        console.log('✓ Tournaments data loaded');
+    } catch (error) {
+        console.error('Failed to load tournaments data:', error);
+        alert('Failed to load tournament data. Please check that tournaments.json exists and is valid.');
+        // Set empty tournaments to prevent errors
+        CONFIG.TOURNAMENTS = { men: { title: '', players: [] }, women: { title: '', players: [] } };
+        state.tournamentsLoaded = true;
+    }
 }
 
 // Load custom fonts
@@ -119,59 +130,29 @@ async function loadFonts() {
 // Populate dropdown menus based on tournament type
 function populateDropdowns() {
     const tournament = CONFIG.TOURNAMENTS[state.tournamentType];
-    
-    // Clear existing options 
-    elements.dropdownA.innerHTML = '';
-    elements.dropdownB.innerHTML = '';
-    
-    // Populate both dropdowns with the same player list
-    tournament.players.forEach((player, index) => {
-        // Add to Player 1 dropdown
-        const optionA = document.createElement('option');
-        optionA.value = player.id;
-        optionA.textContent = player.name;
-        optionA.dataset.path = player.path;
-        optionA.dataset.name = player.name;
-        optionA.dataset.country = player.country;
-        // Select first player by default
-        if (index === 0) optionA.selected = true;
-        elements.dropdownA.appendChild(optionA);
-        
-        // Add to Player 2 dropdown
-        const optionB = document.createElement('option');
-        optionB.value = player.id;
-        optionB.textContent = player.name;
-        optionB.dataset.path = player.path;
-        optionB.dataset.name = player.name;
-        optionB.dataset.country = player.country;
-        // Select second player by default
-        if (index === 1) optionB.selected = true;
-        elements.dropdownB.appendChild(optionB);
-    });
-    
-    // Set default selections to first two players
-    if (tournament.players.length >= 2) {
-        const player1 = tournament.players[0];
-        const player2 = tournament.players[1];
-        
-        state.selectedImageA = player1.path;
-        state.selectedPlayerA = {
-            name: player1.name,
-            country: player1.country
-        };
-        
-        state.selectedImageB = player2.path;
-        state.selectedPlayerB = {
-            name: player2.name,
-            country: player2.country
-        };
+    const players = tournament.players.map(player => ({
+        value: player.id || player.name,
+        name: player.name,
+        country: player.country,
+        path: player.image
+    }));
+
+    state.dropdownOptions.a = players;
+    state.dropdownOptions.b = players;
+
+    if (players.length >= 2) {
+        selectDropdownPlayer('a', players[0].value);
+        selectDropdownPlayer('b', players[1].value);
+    } else if (players.length === 1) {
+        selectDropdownPlayer('a', players[0].value);
+        selectDropdownPlayer('b', players[0].value);
     } else {
-        // Reset selections if not enough players
-        state.selectedImageA = null;
-        state.selectedImageB = null;
-        state.selectedPlayerA = null;
-        state.selectedPlayerB = null;
+        clearDropdownSelection('a');
+        clearDropdownSelection('b');
     }
+
+    renderFilterableDropdown('a');
+    renderFilterableDropdown('b');
 }
 
 // Setup event listeners
@@ -181,55 +162,227 @@ function setupEventListeners() {
         state.tournamentType = e.target.value;
         populateDropdowns();
         preloadImages();
+        validateAndUpdateNumericValue();
         updatePreview();
     });
-    
-    elements.dropdownA.addEventListener('change', (e) => {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        state.selectedImageA = selectedOption.dataset.path || null;
-        state.selectedPlayerA = selectedOption.value ? {
-            name: selectedOption.dataset.name,
-            country: selectedOption.dataset.country
-        } : null;
-        updatePreview();
-    });
-    
-    elements.dropdownB.addEventListener('change', (e) => {
-        const selectedOption = e.target.options[e.target.selectedIndex];
-        state.selectedImageB = selectedOption.dataset.path || null;
-        state.selectedPlayerB = selectedOption.value ? {
-            name: selectedOption.dataset.name,
-            country: selectedOption.dataset.country
-        } : null;
-        updatePreview();
-    });
+
+    setupFilterableDropdownEvents('a');
+    setupFilterableDropdownEvents('b');
     
     elements.winnerSelect.addEventListener('change', (e) => {
         state.winner = e.target.value || null;
+        validateAndUpdateNumericValue();
         updatePreview();
     });
     
+    // Update state on input but don't validate yet (allow free typing)
     elements.numericInput.addEventListener('input', (e) => {
-        let value = parseInt(e.target.value) || 0;
-        // Clamp value between 0 and 100
-        value = Math.max(0, Math.min(100, value));
-        e.target.value = value;
-        state.numericValue = value;
+        const value = parseInt(e.target.value);
+        if (!isNaN(value)) {
+            state.numericValue = value;
+        }
+    });
+    
+    // Validate and render on Enter key press
+    elements.numericInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            validateAndUpdateNumericValue();
+            updatePreview();
+            elements.numericInput.blur(); // Remove focus after Enter
+        }
+    });
+    
+    // Validate on blur (focus out) but don't render
+    elements.numericInput.addEventListener('blur', () => {
+        console.log("Focus out");
+        validateAndUpdateNumericValue();
         updatePreview();
     });
     
-    elements.renderBtn.addEventListener('click', exportPNG);
+    elements.renderBtn.addEventListener('click', () => {
+        validateAndUpdateNumericValue();
+        exportPNG();
+    });
     
     // Handle window resize for responsive preview
     window.addEventListener('resize', updatePreview);
+
+    document.addEventListener('click', (event) => {
+        if (!elements.dropdownAContainer.contains(event.target)) {
+            closeDropdown('a');
+        }
+        if (!elements.dropdownBContainer.contains(event.target)) {
+            closeDropdown('b');
+        }
+    });
+}
+
+// Validate and update numeric input value
+function validateAndUpdateNumericValue() {
+    let value = parseInt(elements.numericInput.value);
+    if (isNaN(value)) {
+        value = 50; // Default value
+    }
+    // No clamping - accept any value
+    let clampValue =Math.max(50, Math.min(value, 99));
+    elements.numericInput.value = clampValue;
+    state.numericValue = clampValue;
 }
 
 // Preload images for better performance
+function getDropdownElements(key) {
+    return key === 'a'
+        ? {
+            hiddenInput: elements.dropdownA,
+            textInput: elements.dropdownAInput,
+            list: elements.dropdownAList,
+            container: elements.dropdownAContainer
+        }
+        : {
+            hiddenInput: elements.dropdownB,
+            textInput: elements.dropdownBInput,
+            list: elements.dropdownBList,
+            container: elements.dropdownBContainer
+        };
+}
+
+function setupFilterableDropdownEvents(key) {
+    const { textInput, container } = getDropdownElements(key);
+    const toggleButton = container.querySelector('.filterable-dropdown__toggle');
+
+    textInput.addEventListener('focus', () => {
+        openDropdown(key);
+    });
+
+    textInput.addEventListener('input', (e) => {
+        openDropdown(key, false);
+        renderFilterableDropdown(key, e.target.value);
+    });
+
+    textInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeDropdown(key);
+            textInput.blur();
+        }
+    });
+
+    toggleButton.addEventListener('click', () => {
+        const isOpen = container.classList.contains('filterable-dropdown--open');
+        if (isOpen) {
+            closeDropdown(key);
+        } else {
+            openDropdown(key);
+            textInput.focus();
+        }
+    });
+}
+
+function renderFilterableDropdown(key, filterText = '') {
+    const { list, textInput, hiddenInput } = getDropdownElements(key);
+    const normalizedFilter = filterText.trim().toLowerCase();
+    const options = state.dropdownOptions[key].filter(option =>
+        option.name.toLowerCase().includes(normalizedFilter)
+    );
+
+    list.innerHTML = '';
+
+    if (options.length === 0) {
+        const emptyItem = document.createElement('li');
+        emptyItem.className = 'filterable-dropdown__item filterable-dropdown__item--empty';
+        emptyItem.textContent = 'No players found';
+        list.appendChild(emptyItem);
+        return;
+    }
+
+    options.forEach(option => {
+        const item = document.createElement('li');
+        item.className = 'filterable-dropdown__item';
+        item.textContent = option.name;
+        item.setAttribute('role', 'option');
+        item.dataset.value = option.value;
+
+        if (hiddenInput.value === option.value) {
+            item.classList.add('filterable-dropdown__item--selected');
+            item.setAttribute('aria-selected', 'true');
+        }
+
+        item.addEventListener('mousedown', (event) => {
+            event.preventDefault();
+            selectDropdownPlayer(key, option.value);
+            closeDropdown(key);
+            validateAndUpdateNumericValue();
+            updatePreview();
+        });
+
+        list.appendChild(item);
+    });
+
+    if (!document.activeElement || document.activeElement !== textInput) {
+        const selectedOption = state.dropdownOptions[key].find(option => option.value === hiddenInput.value);
+        textInput.value = selectedOption ? selectedOption.name : '';
+    }
+}
+
+function selectDropdownPlayer(key, value) {
+    const { hiddenInput, textInput } = getDropdownElements(key);
+    const selectedOption = state.dropdownOptions[key].find(option => option.value === value);
+
+    hiddenInput.value = selectedOption ? selectedOption.value : '';
+
+    if (selectedOption) {
+        textInput.value = selectedOption.name;
+    } else {
+        textInput.value = '';
+    }
+
+    if (key === 'a') {
+        state.selectedImageA = selectedOption ? selectedOption.path : null;
+        state.selectedPlayerA = selectedOption ? {
+            name: selectedOption.name,
+            country: selectedOption.country
+        } : null;
+    } else {
+        state.selectedImageB = selectedOption ? selectedOption.path : null;
+        state.selectedPlayerB = selectedOption ? {
+            name: selectedOption.name,
+            country: selectedOption.country
+        } : null;
+    }
+
+    renderFilterableDropdown(key, textInput.value);
+}
+
+function clearDropdownSelection(key) {
+    selectDropdownPlayer(key, '');
+}
+
+function openDropdown(key, resetFilter = true) {
+    const { container, textInput } = getDropdownElements(key);
+    container.classList.add('filterable-dropdown--open');
+    textInput.setAttribute('aria-expanded', 'true');
+
+    if (resetFilter) {
+        textInput.value = '';
+    }
+
+    renderFilterableDropdown(key, textInput.value);
+}
+
+function closeDropdown(key) {
+    const { container, textInput, hiddenInput } = getDropdownElements(key);
+    container.classList.remove('filterable-dropdown--open');
+    textInput.setAttribute('aria-expanded', 'false');
+
+    const selectedOption = state.dropdownOptions[key].find(option => option.value === hiddenInput.value);
+    textInput.value = selectedOption ? selectedOption.name : '';
+}
+
 function preloadImages() {
     const tournament = CONFIG.TOURNAMENTS[state.tournamentType];
     const imagesToLoad = [
         CONFIG.BACKGROUND_IMAGE,
-        ...tournament.players.map(player => player.path)
+        ...tournament.players.map(player => player.image)
     ];
     
     let loadedCount = 0;
@@ -259,7 +412,7 @@ function preloadImages() {
 
 // Check if initialization is complete and render once
 function checkInitializationComplete() {
-    if (state.isInitializing && state.fontsLoaded && Object.keys(state.loadedImages).length > 0) {
+    if (state.isInitializing && state.fontsLoaded && state.tournamentsLoaded && Object.keys(state.loadedImages).length > 0) {
         state.isInitializing = false;
         updatePreview();
     }
@@ -347,7 +500,12 @@ async function updatePreview() {
     const titleLayout = CONFIG.LAYOUT.title;
     const fontFamily = state.fontsLoaded ? 'IBM Plex Sans' : 'Arial';
     
-    ctx.font = `600 ${titleLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+    // Get font weight from layout config (handle both 'light' and 'IBMPlexSans-Light.ttf' formats)
+    const titleFontValue = titleLayout.font || 'regular';
+    const titleWeight = titleFontValue.includes('Light') || titleFontValue === 'light' ? '300' :
+                        titleFontValue.includes('SemiBold') || titleFontValue === 'semibold' ? '600' : '400';
+    
+    ctx.font = `${titleWeight} ${titleLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
     ctx.fillStyle = titleLayout.color;
     ctx.textAlign = titleLayout.align;
     ctx.textBaseline = titleLayout.baseline;
@@ -362,13 +520,17 @@ async function updatePreview() {
         const nameLayout = CONFIG.LAYOUT.playerNameA;
         const countryLayout = CONFIG.LAYOUT.playerCountryA;
         
-        ctx.font = `300 ${nameLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+        // Get font weight from layout config
+        const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
+        const countryWeight = countryLayout.font === 'light' ? '300' : countryLayout.font === 'semibold' ? '600' : '400';
+        
+        ctx.font = `${nameWeight} ${nameLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
         ctx.fillStyle = nameLayout.color;
         ctx.textAlign = nameLayout.align;
         ctx.textBaseline = nameLayout.baseline;
         ctx.fillText(state.selectedPlayerA.name, nameLayout.x * scale, nameLayout.y * scale);
         
-        ctx.font = `400 ${countryLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+        ctx.font = `${countryWeight} ${countryLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
         ctx.fillStyle = countryLayout.color;
         ctx.textAlign = countryLayout.align;
         ctx.textBaseline = countryLayout.baseline;
@@ -379,13 +541,17 @@ async function updatePreview() {
         const nameLayout = CONFIG.LAYOUT.playerNameB;
         const countryLayout = CONFIG.LAYOUT.playerCountryB;
         
-        ctx.font = `300 ${nameLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+        // Get font weight from layout config
+        const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
+        const countryWeight = countryLayout.font === 'light' ? '300' : countryLayout.font === 'semibold' ? '600' : '400';
+        
+        ctx.font = `${nameWeight} ${nameLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
         ctx.fillStyle = nameLayout.color;
         ctx.textAlign = nameLayout.align;
         ctx.textBaseline = nameLayout.baseline;
         ctx.fillText(state.selectedPlayerB.name, nameLayout.x * scale, nameLayout.y * scale);
         
-        ctx.font = `400 ${countryLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+        ctx.font = `${countryWeight} ${countryLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
         ctx.fillStyle = countryLayout.color;
         ctx.textAlign = countryLayout.align;
         ctx.textBaseline = countryLayout.baseline;
@@ -400,18 +566,28 @@ async function updatePreview() {
     
     // Draw numeric value text
     const textLayout = CONFIG.LAYOUT.text;
-    ctx.font = `400 ${textLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+    // Get font weight from layout config
+    const textWeight = textLayout.font === 'light' ? '300' : textLayout.font === 'semibold' ? '600' : '400';
+    ctx.font = `${textWeight} ${textLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
     ctx.fillStyle = arcColor;
     ctx.textAlign = textLayout.align;
     ctx.textBaseline = textLayout.baseline;
+    // Apply letter spacing if defined
+    if (textLayout.letterSpacing !== undefined) {
+        ctx.letterSpacing = `${textLayout.letterSpacing * scale}px`;
+    }
     ctx.fillText(
         state.numericValue || '0',
         textLayout.x * scale,
         textLayout.y * scale
     );
+    // Reset letter spacing
+    ctx.letterSpacing = '0px';
     // Draw percent character
     const textPercentLayout = CONFIG.LAYOUT.characterPercent;
-    ctx.font = `400 ${textPercentLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
+    // Get font weight from layout config
+    const percentWeight = textPercentLayout.font === 'light' ? '300' : textPercentLayout.font === 'semibold' ? '600' : '400';
+    ctx.font = `${percentWeight} ${textPercentLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
     ctx.fillStyle = arcColor;
     ctx.textAlign = textPercentLayout.align;
     ctx.textBaseline = textPercentLayout.baseline;
@@ -428,7 +604,7 @@ async function updatePreview() {
         const triangleX = state.winner === 'left'
             ? (textLayout.x - triangleLayout.offsetX) * scale
             : (textLayout.x + triangleLayout.offsetX) * scale;
-        drawTriangle(ctx, triangleX, (textLayout.y-20) * scale, triangleLayout.size * scale, state.winner, arcColor);
+        drawTriangle(ctx, triangleX, (textLayout.y-20) * scale, triangleLayout.size * scale, state.winner, arcColor, triangleLayout.cornerRadius * scale);
     }
 }
 
@@ -516,26 +692,71 @@ function drawProgressArc(ctx, layout, scale, value, color, winner, opacity = 1) 
     ctx.restore();
 }
 
-// Draw triangle indicator
-function drawTriangle(ctx, x, y, size, direction, color) {
+// Draw triangle indicator with rounded corners
+function drawTriangle(ctx, x, y, size, direction, color, cornerRadius = 0) {
     ctx.save();
     ctx.fillStyle = color;
-    ctx.beginPath();
     
-    if (direction === 'left') {
-        // Triangle pointing left
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + size, y - size / 2);
-        ctx.lineTo(x + size, y + size / 2);
+    if (cornerRadius > 0) {
+        // Draw triangle with rounded corners
+        ctx.beginPath();
+        
+        if (direction === 'left') {
+            // Triangle pointing left with rounded corners
+            const tipX = x;
+            const tipY = y;
+            const baseX = x + size;
+            const topY = y - size / 2;
+            const bottomY = y + size / 2;
+            
+            // Start from tip
+            ctx.moveTo(tipX, tipY);
+            // Line to top corner (with rounding)
+            ctx.arcTo(baseX, topY, baseX, bottomY, cornerRadius);
+            // Line to bottom corner (with rounding)
+            ctx.arcTo(baseX, bottomY, tipX, tipY, cornerRadius);
+            // Back to tip (with rounding)
+            ctx.arcTo(tipX, tipY, baseX, topY, cornerRadius);
+        } else {
+            // Triangle pointing right with rounded corners
+            const tipX = x;
+            const tipY = y;
+            const baseX = x - size;
+            const topY = y - size / 2;
+            const bottomY = y + size / 2;
+            
+            // Start from tip
+            ctx.moveTo(tipX, tipY);
+            // Line to top corner (with rounding)
+            ctx.arcTo(baseX, topY, baseX, bottomY, cornerRadius);
+            // Line to bottom corner (with rounding)
+            ctx.arcTo(baseX, bottomY, tipX, tipY, cornerRadius);
+            // Back to tip (with rounding)
+            ctx.arcTo(tipX, tipY, baseX, topY, cornerRadius);
+        }
+        
+        ctx.closePath();
+        ctx.fill();
     } else {
-        // Triangle pointing right
-        ctx.moveTo(x, y);
-        ctx.lineTo(x - size, y - size / 2);
-        ctx.lineTo(x - size, y + size / 2);
+        // Draw triangle without rounded corners (original behavior)
+        ctx.beginPath();
+        
+        if (direction === 'left') {
+            // Triangle pointing left
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + size, y - size / 2);
+            ctx.lineTo(x + size, y + size / 2);
+        } else {
+            // Triangle pointing right
+            ctx.moveTo(x, y);
+            ctx.lineTo(x - size, y - size / 2);
+            ctx.lineTo(x - size, y + size / 2);
+        }
+        
+        ctx.closePath();
+        ctx.fill();
     }
     
-    ctx.closePath();
-    ctx.fill();
     ctx.restore();
 }
 
@@ -628,7 +849,12 @@ async function exportPNG() {
         const titleLayout = CONFIG.LAYOUT.title;
         const fontFamily = state.fontsLoaded ? 'IBM Plex Sans' : 'Arial';
         
-        ctx.font = `600 ${titleLayout.fontSize}px ${fontFamily}, sans-serif`;
+        // Get font weight from layout config (handle both 'light' and 'IBMPlexSans-Light.ttf' formats)
+        const titleFontValue = titleLayout.font || 'regular';
+        const titleWeight = titleFontValue.includes('Light') || titleFontValue === 'light' ? '300' :
+                            titleFontValue.includes('SemiBold') || titleFontValue === 'semibold' ? '600' : '400';
+        
+        ctx.font = `${titleWeight} ${titleLayout.fontSize}px ${fontFamily}, sans-serif`;
         ctx.fillStyle = titleLayout.color;
         ctx.textAlign = titleLayout.align;
         ctx.textBaseline = titleLayout.baseline;
@@ -639,13 +865,17 @@ async function exportPNG() {
             const nameLayout = CONFIG.LAYOUT.playerNameA;
             const countryLayout = CONFIG.LAYOUT.playerCountryA;
             
-            ctx.font = `300 ${nameLayout.fontSize}px ${fontFamily}, sans-serif`;
+            // Get font weight from layout config
+            const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
+            const countryWeight = countryLayout.font === 'light' ? '300' : countryLayout.font === 'semibold' ? '600' : '400';
+            
+            ctx.font = `${nameWeight} ${nameLayout.fontSize}px ${fontFamily}, sans-serif`;
             ctx.fillStyle = nameLayout.color;
             ctx.textAlign = nameLayout.align;
             ctx.textBaseline = nameLayout.baseline;
             ctx.fillText(state.selectedPlayerA.name, nameLayout.x, nameLayout.y);
             
-            ctx.font = `400 ${countryLayout.fontSize}px ${fontFamily}, sans-serif`;
+            ctx.font = `${countryWeight} ${countryLayout.fontSize}px ${fontFamily}, sans-serif`;
             ctx.fillStyle = countryLayout.color;
             ctx.textAlign = countryLayout.align;
             ctx.textBaseline = countryLayout.baseline;
@@ -656,13 +886,17 @@ async function exportPNG() {
             const nameLayout = CONFIG.LAYOUT.playerNameB;
             const countryLayout = CONFIG.LAYOUT.playerCountryB;
             
-            ctx.font = `300 ${nameLayout.fontSize}px ${fontFamily}, sans-serif`;
+            // Get font weight from layout config
+            const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
+            const countryWeight = countryLayout.font === 'light' ? '300' : countryLayout.font === 'semibold' ? '600' : '400';
+            
+            ctx.font = `${nameWeight} ${nameLayout.fontSize}px ${fontFamily}, sans-serif`;
             ctx.fillStyle = nameLayout.color;
             ctx.textAlign = nameLayout.align;
             ctx.textBaseline = nameLayout.baseline;
             ctx.fillText(state.selectedPlayerB.name, nameLayout.x, nameLayout.y);
             
-            ctx.font = `400 ${countryLayout.fontSize}px ${fontFamily}, sans-serif`;
+            ctx.font = `${countryWeight} ${countryLayout.fontSize}px ${fontFamily}, sans-serif`;
             ctx.fillStyle = countryLayout.color;
             ctx.textAlign = countryLayout.align;
             ctx.textBaseline = countryLayout.baseline;
@@ -677,11 +911,33 @@ async function exportPNG() {
         
         // Draw numeric value text
         const textLayout = CONFIG.LAYOUT.text;
-        ctx.font = `400 ${textLayout.fontSize}px ${fontFamily}, sans-serif`;
+        // Get font weight from layout config
+        const textWeight = textLayout.font === 'light' ? '300' : textLayout.font === 'semibold' ? '600' : '400';
+        ctx.font = `${textWeight} ${textLayout.fontSize}px ${fontFamily}, sans-serif`;
         ctx.fillStyle = arcColor;
         ctx.textAlign = textLayout.align;
         ctx.textBaseline = textLayout.baseline;
+        // Apply letter spacing if defined
+        if (textLayout.letterSpacing !== undefined) {
+            ctx.letterSpacing = `${textLayout.letterSpacing}px`;
+        }
         ctx.fillText(state.numericValue || '0', textLayout.x, textLayout.y);
+        // Reset letter spacing
+        ctx.letterSpacing = '0px';
+        
+        // Draw percent character
+        const textPercentLayout = CONFIG.LAYOUT.characterPercent;
+        // Get font weight from layout config
+        const percentWeight = textPercentLayout.font === 'light' ? '300' : textPercentLayout.font === 'semibold' ? '600' : '400';
+        ctx.font = `${percentWeight} ${textPercentLayout.fontSize}px ${fontFamily}, sans-serif`;
+        ctx.fillStyle = arcColor;
+        ctx.textAlign = textPercentLayout.align;
+        ctx.textBaseline = textPercentLayout.baseline;
+        ctx.fillText(
+            '%',
+            (state.numericValue==100? textPercentLayout.x+30:textPercentLayout.x),
+            textPercentLayout.y
+        );
         
         // Draw winner triangle
         if (state.winner) {
@@ -689,7 +945,7 @@ async function exportPNG() {
             const triangleX = state.winner === 'left'
                 ? textLayout.x - triangleLayout.offsetX
                 : textLayout.x + triangleLayout.offsetX;
-            drawTriangle(ctx, triangleX, textLayout.y, triangleLayout.size, state.winner, arcColor);
+            drawTriangle(ctx, triangleX, textLayout.y, triangleLayout.size, state.winner, arcColor, triangleLayout.cornerRadius);
         }
         
         // Try blob method first

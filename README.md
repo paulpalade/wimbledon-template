@@ -1,245 +1,213 @@
-# PNG Template Generator Web App
+# PNG Template Generator
 
-A browser-based web application that generates static PNG images (3840×2160) based on user-selected inputs.
+A web-based application for generating high-resolution PNG graphics for tennis tournament finals. This tool allows you to create professional-looking match preview images with player photos, names, countries, and win probability indicators.
 
-## ⚠️ IMPORTANT: Must Use Local Server
+## 🎯 Features
 
-**You MUST run this app through a local web server** to avoid CORS security issues that prevent PNG export.
+- **Tournament Selection**: Support for both Men's and Women's Singles Finals
+- **Player Selection**: Searchable dropdown menus with extensive player databases
+- **Win Probability**: Visual representation with percentage and arc indicators
+- **High-Resolution Export**: Generates 4K (3840x2160) PNG images
+- **Live Preview**: Real-time canvas preview of the final output
+- **Responsive Design**: Built with IBM Carbon Design System
+- **Custom Fonts**: Uses IBM Plex Sans font family
 
-**DO NOT** open `index.html` directly in your browser (file://) - the export will fail with "Tainted canvas" error!
+## 📋 Prerequisites
 
-## Quick Start
+- A modern web browser (Chrome, Firefox, Safari, or Edge)
+- Python 3 (recommended) or Python 2 for running the local server
+- Alternatively: Node.js, PHP, or any other HTTP server
 
-```bash
-# 1. Generate placeholder images
-pip install pillow
-python3 generate_placeholders.py
+## 🚀 Quick Start
 
-# 2. Start local server (choose one):
-./start-server.sh                    # Easy way (macOS/Linux)
-python3 -m http.server 8000          # Python
-npx http-server -p 8000              # Node.js
+### Option 1: Using the Startup Script (Recommended)
 
-# 3. Open http://localhost:8000 in your browser
-```
+1. Clone or download this repository
+2. Open a terminal in the project directory
+3. Make the script executable (first time only):
+   ```bash
+   chmod +x start-server.sh
+   ```
+4. Run the startup script:
+   ```bash
+   ./start-server.sh
+   ```
+5. The browser will automatically open to `http://localhost:8000`
 
-## Features
+### Option 2: Manual Server Setup
 
-- **Tournament Selection**: Choose between Men's Final or Women's Final
-- **Dynamic Title**: Displays "Gentlemen's Singles Final" or "Ladies' Singles Final" based on selection
-- **Dropdown Selection**: Choose from predefined image sets for Image A and Image B (changes based on tournament)
-- **Numeric Input**: Enter a numeric value to display on the generated image
-- **Custom Fonts**: Uses IBM Plex Sans (Regular and SemiBold) for professional typography
-- **Real-time Preview**: See changes instantly in a responsive 16:9 preview canvas
-- **High-Resolution Export**: Generate PNG files at 3840×2160 resolution
-- **Client-Side Processing**: Runs entirely in the browser (but needs local server for CORS)
-
-## Setup Instructions
-
-### 1. Add Your Assets
-
-Place your image assets in the `assets/` directory structure:
-
-```
-assets/
-├── background.png              # Background image (3840×2160)
-├── fonts/
-│   ├── IBMPlexSans-Regular.ttf    # Regular font (already provided)
-│   └── IBMPlexSans-SemiBold.ttf   # SemiBold font (already provided)
-├── men/                        # Men's tournament images
-│   ├── image-a1.png           # Player images for dropdown A
-│   ├── image-a2.png
-│   ├── image-a3.png
-│   ├── image-b1.png           # Player images for dropdown B
-│   ├── image-b2.png
-│   └── image-b3.png
-└── women/                      # Women's tournament images
-    ├── image-a1.png           # Player images for dropdown A
-    ├── image-a2.png
-    ├── image-a3.png
-    ├── image-b1.png           # Player images for dropdown B
-    ├── image-b2.png
-    └── image-b3.png
-```
-
-**Note**: You can add more images by editing the `TOURNAMENTS` object in `app.js`.
-
-### 2. Customize Configuration
-
-Edit `app.js` to customize the layout, image sets, and tournament titles:
-
-```javascript
-const CONFIG = {
-  // Add or modify image sets
-  IMAGE_SET_A: [
-    { id: "image-a1", name: "Your Image Name", path: "assets/your-image.png" },
-    // Add more images...
-  ],
-
-  // Adjust positioning and sizing
-  LAYOUT: {
-    imageA: { x: 500, y: 400, width: 800, height: 800 },
-    imageB: { x: 2500, y: 400, width: 800, height: 800 },
-    text: {
-      x: 1920, // X position (center of 3840px width)
-      y: 1800, // Y position
-      fontSize: 120, // Font size in pixels
-      color: "#ffffff", // Text color
-      align: "center",
-      baseline: "middle",
-    },
-  },
-};
-```
-
-### 3. Run the Application
-
-Simply open `index.html` in a modern web browser:
-
-- **Chrome/Edge**: Recommended for best compatibility
-- **Firefox**: Fully supported
-- **Safari**: Supported
-
-Or use a local development server:
+**Using Python 3:**
 
 ```bash
-# Using Python 3
-python -m http.server 8000
+python3 -m http.server 8000
+```
 
-# Using Node.js (http-server)
-npx http-server
+**Using Python 2:**
 
-# Using PHP
+```bash
+python -m SimpleHTTPServer 8000
+```
+
+**Using Node.js:**
+
+```bash
+npx http-server -p 8000
+```
+
+**Using PHP:**
+
+```bash
 php -S localhost:8000
 ```
 
-Then navigate to `http://localhost:8000` in your browser.
+Then open your browser and navigate to `http://localhost:8000`
 
-## Usage
+## 📖 Usage
 
-1. **Select Image A**: Choose an image from the first dropdown
-2. **Select Image B**: Choose an image from the second dropdown
-3. **Enter Numeric Value**: Type a number in the input field
-4. **Preview**: The canvas updates in real-time as you make changes
-5. **Render PNG**: Click the "Render PNG" button to export the final image
-6. **Save**: Choose a location and filename in the browser's save dialog
+1. **Select Tournament Type**: Choose between Men's Final or Women's Final
+2. **Select Player 1**: Use the searchable dropdown to find and select the first player
+3. **Select Player 2**: Use the searchable dropdown to find and select the second player
+4. **Choose Winner**: Select which player is predicted to win (Left or Right)
+5. **Set Win Probability**: Enter a percentage between 50-99 for the likelihood of winning
+6. **Generate Image**: Click the "Render PNG" button to create and download the image
 
-## Technical Specifications
-
-- **Output Format**: PNG
-- **Resolution**: 3840 × 2160 pixels (4K UHD)
-- **Color Space**: RGB
-- **Transparency**: Supported (if source assets have transparency)
-- **Rendering**: HTML5 Canvas API
-- **Export**: Client-side using Canvas.toBlob()
-
-## File Structure
+## 🗂️ Project Structure
 
 ```
 .
-├── index.html          # Main HTML structure
-├── styles.css          # Styling and responsive layout
-├── app.js             # Application logic and rendering
-├── assets/            # Image assets directory
-│   ├── background.png
-│   ├── image-a1.png
-│   ├── image-a2.png
-│   ├── image-a3.png
-│   ├── image-b1.png
-│   ├── image-b2.png
-│   └── image-b3.png
-└── README.md          # This file
+├── index.html              # Main HTML file
+├── app.js                  # Application logic and canvas rendering
+├── styles.css              # Custom styles and Carbon Design overrides
+├── tournaments.json        # Player database for men's and women's tournaments
+├── start-server.sh         # Server startup script
+├── .gitignore             # Git ignore rules
+├── assets/
+│   ├── background.png     # Background template image
+│   ├── fonts/             # IBM Plex Sans font files
+│   │   ├── IBMPlexSans-Light.ttf
+│   │   ├── IBMPlexSans-Regular.ttf
+│   │   └── IBMPlexSans-SemiBold.ttf
+│   ├── men/               # Men's player images
+│   └── women/             # Women's player images
+└── README.md              # This file
 ```
 
-## Customization Guide
+## 🎨 Technical Details
 
-### Adding More Images
+### Canvas Specifications
 
-1. Add your image files to the `assets/` directory
-2. Edit `app.js` and update the `IMAGE_SET_A` or `IMAGE_SET_B` arrays:
+- **Export Resolution**: 3840 x 2160 pixels (4K)
+- **Preview Aspect Ratio**: 16:9
+- **Image Format**: PNG with transparency support
+
+### Layout Configuration
+
+The application uses precise positioning for all elements:
+
+- **Title**: Centered at top
+- **Player Images**: 1022x1022px with colored borders
+  - Player 1 (Left): Purple border (#8A3FFC)
+  - Player 2 (Right): Gold border (#D2A106)
+- **Player Names**: IBM Plex Sans Light, 90px
+- **Country Codes**: IBM Plex Sans Regular, 34px
+- **Win Percentage**: Large centered display with arc indicator
+- **Triangle Indicator**: Points to the predicted winner
+
+### Technologies Used
+
+- **HTML5 Canvas API**: For image rendering and composition
+- **IBM Carbon Design System**: UI components and styling
+- **Vanilla JavaScript**: No framework dependencies
+- **Custom Fonts**: IBM Plex Sans family
+
+## 🔧 Configuration
+
+The application can be customized by modifying the `CONFIG` object in `app.js`:
 
 ```javascript
-IMAGE_SET_A: [
-  { id: "unique-id", name: "Display Name", path: "assets/your-image.png" },
-  // Add more...
-];
+const CONFIG = {
+  EXPORT_WIDTH: 3840,
+  EXPORT_HEIGHT: 2160,
+  BACKGROUND_IMAGE: "assets/background.png",
+  TOURNAMENTS_JSON: "tournaments.json",
+  // ... additional configuration
+};
 ```
 
-### Changing Layout
+## 📝 Adding New Players
 
-Modify the `LAYOUT` object in `app.js`:
+To add new players to the database:
 
-```javascript
-LAYOUT: {
-    imageA: {
-        x: 500,      // X position in pixels
-        y: 400,      // Y position in pixels
-        width: 800,  // Width in pixels
-        height: 800  // Height in pixels
-    },
-    // Adjust imageB and text similarly
-}
-```
+1. Open `tournaments.json`
+2. Add a new player object to either the `men.players` or `women.players` array:
+   ```json
+   {
+     "name": "Player Name",
+     "country": "COUNTRY_CODE",
+     "image": "assets/men/Player Name_COUNTRY_CODE.png"
+   }
+   ```
+3. Add the corresponding player image to the appropriate assets folder
+4. Image naming convention: `Player Name_COUNTRY_CODE.png`
 
-### Changing Text Style
+## 🖼️ Image Requirements
 
-Update the text properties in the `LAYOUT.text` object:
+Player images should:
 
-```javascript
-text: {
-    x: 1920,              // Horizontal position
-    y: 1800,              // Vertical position
-    fontSize: 120,        // Font size
-    color: '#ffffff',     // Text color (hex, rgb, or named)
-    align: 'center',      // 'left', 'center', 'right'
-    baseline: 'middle'    // 'top', 'middle', 'bottom'
-}
-```
+- Be in PNG format
+- Have dimensions of approximately 1022x1022 pixels (or similar square aspect ratio)
+- Have a transparent or white background
+- Be named following the pattern: `FirstName LastName_COUNTRY.png`
 
-### Using Different Fonts
+## 🐛 Troubleshooting
 
-To use custom fonts, add them to your CSS:
+### CORS Errors
 
-```css
-@font-face {
-  font-family: "YourFont";
-  src: url("fonts/your-font.woff2") format("woff2");
-}
-```
+If you see CORS-related errors in the browser console:
 
-Then update the font in `app.js` where text is rendered:
-
-```javascript
-ctx.font = `${textLayout.fontSize}px YourFont, Arial, sans-serif`;
-```
-
-## Browser Compatibility
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-## Troubleshooting
+- Make sure you're running a local server (not opening the HTML file directly)
+- Use the provided `start-server.sh` script or one of the manual server options
 
 ### Images Not Loading
 
-- Ensure image paths in `app.js` match actual file locations
-- Check browser console for error messages
-- Verify images are in supported formats (PNG, JPG, WebP)
+- Verify that all image paths in `tournaments.json` are correct
+- Check that image files exist in the specified directories
+- Ensure image filenames match exactly (case-sensitive)
 
-### Export Not Working
+### Fonts Not Rendering
 
-- Check if browser blocks downloads (allow in settings)
-- Ensure sufficient memory for 4K image generation
-- Try with smaller/fewer images if memory issues occur
+- Confirm that all font files are present in `assets/fonts/`
+- Check browser console for font loading errors
+- Clear browser cache and reload
 
-### Preview Not Updating
+## 🤝 Contributing
 
-- Check browser console for JavaScript errors
-- Ensure all event listeners are properly attached
-- Verify image paths are correct
+To contribute to this project:
 
-## License
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-This project is provided as-is for your use and modification.
+## 📄 License
+
+This project is provided as-is for tournament graphics generation purposes.
+
+## 🙏 Acknowledgments
+
+- **IBM Carbon Design System**: For the UI components and design language
+- **IBM Plex Sans**: For the beautiful typography
+- Tennis player images and data sources
+
+## 📞 Support
+
+For issues, questions, or suggestions:
+
+- Check the troubleshooting section above
+- Review the browser console for error messages
+- Ensure all prerequisites are met
+
+---
+
+**Made with Bob** 🤖
