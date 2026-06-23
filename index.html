@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PNG Template Generator</title>
+    <link rel="stylesheet" href="https://unpkg.com/carbon-components@10.58.12/css/carbon-components.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,42 +13,84 @@
             <h1>PNG Template Generator</h1>
             
             <div class="controls">
-                <div class="control-group">
-                    <label for="tournament-type">Tournament:</label>
-                    <select id="tournament-type">
-                        <option value="men">Men's Final</option>
-                        <option value="women">Women's Final</option>
-                    </select>
+                <div class="bx--form-item">
+                    <div class="bx--select">
+                        <label for="tournament-type" class="bx--label">Tournament:</label>
+                        <div class="bx--select-input__wrapper">
+                            <select id="tournament-type" class="bx--select-input">
+                                <option value="men">Men's Final</option>
+                                <option value="women">Women's Final</option>
+                            </select>
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;" xmlns="http://www.w3.org/2000/svg" class="bx--select__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path></svg>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <label for="dropdown-a">Player 1:</label>
-                    <select id="dropdown-a">
-                        <option value="">Select Player 1</option>
-                    </select>
+                <div class="bx--form-item">
+                    <label for="dropdown-a-input" class="bx--label">Player 1:</label>
+                    <div class="filterable-dropdown" data-dropdown="a">
+                        <div class="filterable-dropdown__control">
+                            <input
+                                type="text"
+                                id="dropdown-a-input"
+                                class="bx--text-input filterable-dropdown__input"
+                                placeholder="Search Player 1"
+                                autocomplete="off"
+                                role="combobox"
+                                aria-expanded="false"
+                                aria-controls="dropdown-a-list"
+                            >
+                            <button type="button" class="filterable-dropdown__toggle" aria-label="Toggle Player 1 options">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="bx--select__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path></svg>
+                            </button>
+                        </div>
+                        <ul id="dropdown-a-list" class="filterable-dropdown__menu" role="listbox"></ul>
+                        <input type="hidden" id="dropdown-a">
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <label for="dropdown-b">Player 2:</label>
-                    <select id="dropdown-b">
-                        <option value="">Select Player 2</option>
-                    </select>
+                <div class="bx--form-item">
+                    <label for="dropdown-b-input" class="bx--label">Player 2:</label>
+                    <div class="filterable-dropdown" data-dropdown="b">
+                        <div class="filterable-dropdown__control">
+                            <input
+                                type="text"
+                                id="dropdown-b-input"
+                                class="bx--text-input filterable-dropdown__input"
+                                placeholder="Search Player 2"
+                                autocomplete="off"
+                                role="combobox"
+                                aria-expanded="false"
+                                aria-controls="dropdown-b-list"
+                            >
+                            <button type="button" class="filterable-dropdown__toggle" aria-label="Toggle Player 2 options">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" class="bx--select__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path></svg>
+                            </button>
+                        </div>
+                        <ul id="dropdown-b-list" class="filterable-dropdown__menu" role="listbox"></ul>
+                        <input type="hidden" id="dropdown-b">
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <label for="winner-select">Winner:</label>
-                    <select id="winner-select">
-                        <option value="left" selected>Left</option>
-                        <option value="right">Right</option>
-                    </select>
+                <div class="bx--form-item">
+                    <div class="bx--select">
+                        <label for="winner-select" class="bx--label">Winner:</label>
+                        <div class="bx--select-input__wrapper">
+                            <select id="winner-select" class="bx--select-input">
+                                <option value="left" selected>Left</option>
+                                <option value="right">Right</option>
+                            </select>
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;" xmlns="http://www.w3.org/2000/svg" class="bx--select__arrow" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 11L3 6 3.7 5.3 8 9.6 12.3 5.3 13 6z"></path></svg>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <label for="numeric-input">Likelihood to win (0-100):</label>
-                    <input type="number" id="numeric-input" placeholder="Enter number" value="50" min="0" max="100">
+                <div class="bx--form-item">
+                    <label for="numeric-input" class="bx--label">Likelihood to win:</label>
+                    <input type="number" id="numeric-input" class="bx--text-input" placeholder="Enter number" value="50" value="50" min="50" max="99">
                 </div>
 
-                <button id="render-btn" class="render-button">Render PNG</button>
+                <button id="render-btn" class="bx--btn bx--btn--primary render-button">Render PNG</button>
             </div>
         </div>
 
@@ -62,6 +105,7 @@
     <!-- Hidden canvas for high-resolution export -->
     <canvas id="export-canvas" style="display: none;"></canvas>
 
+    <script src="https://unpkg.com/carbon-components@10.58.12/scripts/carbon-components.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

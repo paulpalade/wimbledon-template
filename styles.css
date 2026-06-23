@@ -19,9 +19,9 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: #f4f4f4;
+    color: #161616;
     line-height: 1.6;
 }
 
@@ -52,61 +52,227 @@ body {
     align-items: end;
 }
 
-.control-group {
+/* Carbon Design System overrides and enhancements */
+.bx--form-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
-.control-group label {
-    font-weight: 600;
-    font-size: 14px;
-    color: #555;
+.bx--label {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1rem;
+    letter-spacing: 0.32px;
+    color: #525252;
+    margin-bottom: 0.5rem;
 }
 
-.control-group select,
-.control-group input {
-    padding: 10px 12px;
-    border: 2px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: border-color 0.3s;
-    background: white;
+.bx--select-input__wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-.control-group select:focus,
-.control-group input:focus {
-    outline: none;
-    border-color: #3498db;
-}
-
-.control-group input[type="number"] {
+.bx--select-input {
     width: 100%;
-}
-
-.render-button {
-    padding: 12px 30px;
-    background: #3498db;
-    color: white;
+    height: 2.5rem;
+    padding: 0 2.5rem 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.28572;
+    letter-spacing: 0.16px;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
     border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
+    border-bottom: 1px solid #8d8d8d;
+    background-color: #f4f4f4;
+    color: #161616;
+    transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+                outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
     cursor: pointer;
-    transition: background 0.3s, transform 0.1s;
-    height: fit-content;
+    appearance: none;
 }
 
-.render-button:hover {
-    background: #2980b9;
+.bx--select-input:hover {
+    background-color: #e8e8e8;
 }
 
-.render-button:active {
-    transform: scale(0.98);
+.bx--select-input:focus {
+    outline: 2px solid #0f62fe;
+    outline-offset: -2px;
 }
 
-.render-button:disabled {
-    background: #95a5a6;
+.bx--select__arrow {
+    position: absolute;
+    right: 1rem;
+    fill: #161616;
+    pointer-events: none;
+}
+
+.filterable-dropdown {
+    position: relative;
+}
+
+.filterable-dropdown__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filterable-dropdown__input {
+    padding-right: 3rem;
+}
+
+.filterable-dropdown__toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filterable-dropdown__toggle:focus {
+    outline: 2px solid #0f62fe;
+    outline-offset: -2px;
+}
+
+.filterable-dropdown__toggle .bx--select__arrow {
+    position: static;
+}
+
+.filterable-dropdown__menu {
+    position: absolute;
+    top: calc(100% + 0.125rem);
+    left: 0;
+    right: 0;
+    max-height: 16rem;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid #c6c6c6;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+    display: none;
+}
+
+.filterable-dropdown--open .filterable-dropdown__menu {
+    display: block;
+}
+
+.filterable-dropdown__item {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    line-height: 1.28572;
+    color: #161616;
+    cursor: pointer;
+    background: #ffffff;
+}
+
+.filterable-dropdown__item:hover,
+.filterable-dropdown__item--selected {
+    background: #e8f0fe;
+}
+
+.filterable-dropdown__item--empty {
+    color: #6f6f6f;
+    cursor: default;
+}
+
+.bx--text-input {
+    width: 100%;
+    height: 2.5rem;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.28572;
+    letter-spacing: 0.16px;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+    border: none;
+    border-bottom: 1px solid #8d8d8d;
+    background-color: #f4f4f4;
+    color: #161616;
+    transition: background-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+                outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.bx--text-input:hover {
+    background-color: #e8e8e8;
+}
+
+.bx--text-input:focus {
+    outline: 2px solid #0f62fe;
+    outline-offset: -2px;
+}
+
+.bx--text-input::placeholder {
+    color: #6f6f6f;
+    opacity: 1;
+}
+
+/* Carbon Button Styles */
+.bx--btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    min-height: 3rem;
+    padding: calc(0.875rem - 3px) 63px calc(0.875rem - 3px) 15px;
+    font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.28572;
+    letter-spacing: 0.16px;
+    text-align: left;
+    text-decoration: none;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+    position: relative;
+    vertical-align: top;
+    transition: background 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+                box-shadow 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+                border-color 70ms cubic-bezier(0.2, 0, 0.38, 0.9),
+                outline 70ms cubic-bezier(0.2, 0, 0.38, 0.9);
+}
+
+.bx--btn--primary {
+    background-color: #0f62fe;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    color: #ffffff;
+}
+
+.bx--btn--primary:hover {
+    background-color: #0353e9;
+}
+
+.bx--btn--primary:active {
+    background-color: #002d9c;
+}
+
+.bx--btn--primary:focus {
+    border-color: #0f62fe;
+    box-shadow: inset 0 0 0 1px #0f62fe, inset 0 0 0 2px #ffffff;
+    outline: 1px solid #0f62fe;
+}
+
+.bx--btn--primary:disabled,
+.bx--btn--primary.bx--btn--disabled {
+    background-color: #c6c6c6;
+    border-color: #c6c6c6;
+    color: #8d8d8d;
     cursor: not-allowed;
 }
 
