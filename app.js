@@ -379,11 +379,8 @@ function closeDropdown(key) {
 }
 
 function preloadImages() {
-    const tournament = CONFIG.TOURNAMENTS[state.tournamentType];
-    const imagesToLoad = [
-        CONFIG.BACKGROUND_IMAGE,
-        ...tournament.players.map(player => player.image)
-    ];
+    // Only preload the background image
+    const imagesToLoad = [CONFIG.BACKGROUND_IMAGE];
     
     let loadedCount = 0;
     const totalImages = imagesToLoad.length;
@@ -420,6 +417,11 @@ function checkInitializationComplete() {
 
 // Load an image and return a promise
 function loadImage(src) {
+    // Check if image is already loaded in cache
+    if (state.loadedImages[src]) {
+        return Promise.resolve(state.loadedImages[src]);
+    }
+    
     return new Promise((resolve, reject) => {
         // Add cache-busting timestamp to all images to ensure updates are reflected
         const cacheBustSrc = `${src}?t=${Date.now()}`;
