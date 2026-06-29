@@ -1,6 +1,6 @@
 {
   "men": {
-    "title": "Gentlemen's Singles Final",
+    "title": "Gentlemen's Singles",
     "players": [
       {
         "name": "Agustin Tirante Thiago",
@@ -2645,7 +2645,7 @@
     ]
   },
   "women": {
-    "title": "Ladies' Singles Final",
+    "title": "Ladies' Singles",
     "players": [
       {
         "name": "Abanda Francoise",
