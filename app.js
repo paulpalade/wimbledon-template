@@ -1,11 +1,5 @@
 // Configuration
 const CONFIG = {
-    EXPORT_WIDTH: 3840,
-    EXPORT_HEIGHT: 2160,
-    PREVIEW_ASPECT_RATIO: 16 / 9,
-    
-    // Asset paths
-    BACKGROUND_IMAGE: 'assets/background.png',
     TOURNAMENTS_JSON: 'tournaments.json',
     
     // Font paths
@@ -19,26 +13,66 @@ const CONFIG = {
     TOURNAMENTS: {},
 
     //8A3FFC. D2A106
-    
-    // Layout configuration for image positioning
-    LAYOUT: {
-        title: { x: 1920, y: 187, fontSize: 51, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
-        imageA: { x: 227, y: 595, width: 1022, height: 1022, strokeColor: '#8A3FFC', strokeWidth: 20 },
-        imageB: { x: 2602, y: 595, width: 1022, height: 1022, strokeColor: '#D2A106', strokeWidth: 20},
-        playerNameA: { x: 732, y: 1941, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
-        playerCountryA: { x: 732, y: 2024, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
-        playerNameB: { x: 3105, y: 1941, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
-        playerCountryB: { x: 3105, y: 2024, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
-        text: { x: 1910, y: 1120, fontSize: 218,  align: 'center', baseline: 'middle', font: 'regular', letterSpacing: -10},
-        characterPercent: { x: 2035, y: 1145, fontSize: 128,  align: 'left', baseline: 'middle', font: 'light' },
-        arc: { x: 1920, y: 1102, radius: 346, strokeWidth: 36 },
-        triangle: { size: 90, offsetX: 430, cornerRadius: 7 }
+
+    // Per-aspect-ratio configuration
+    ASPECT_RATIOS: {
+        '16:9': {
+            exportWidth: 3840,
+            exportHeight: 2160,
+            previewAspectRatio: 16 / 9,
+            background: 'assets/background.png',
+            layout: {
+                imageA:         { x: 227,  y: 595,  width: 1022, height: 1022, strokeColor: '#8A3FFC', strokeWidth: 20 },
+                imageB:         { x: 2602, y: 595,  width: 1022, height: 1022, strokeColor: '#D2A106', strokeWidth: 20 },
+                playerNameA:    { x: 732,  y: 1941, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+                playerCountryA: { x: 732,  y: 2024, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+                playerNameB:    { x: 3105, y: 1941, fontSize: 90, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+                playerCountryB: { x: 3105, y: 2024, fontSize: 34, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+                title:          { x: 1920, y: 187,  fontSize: 51,  color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+                text:           { x: 1910, y: 1120, fontSize: 218, align: 'center', baseline: 'middle', font: 'regular', letterSpacing: -10 },
+                characterPercent: { x: 2035, y: 1145, fontSize: 128, align: 'left', baseline: 'middle', font: 'light' },
+                arc:            { x: 1920, y: 1102, radius: 346, strokeWidth: 36 },
+                triangle:       { size: 90, offsetX: 430, cornerRadius: 7 },
+            }
+        },
+        '16:8': {
+            exportWidth: 3840,
+            exportHeight: 1920,
+            previewAspectRatio: 16 / 8,
+            background: 'assets/background2.png',
+            layout: {
+                imageA:         { x: 359,  y: 536,  width: 886, height: 886, strokeColor: '#8A3FFC', strokeWidth: 19 },
+                imageB:         { x: 2595, y: 536,  width: 886, height: 886, strokeColor: '#D2A106', strokeWidth: 19 },
+                playerNameA:    { x: 802,  y: 1725, fontSize: 79, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+                playerCountryA: { x: 802,  y: 1798, fontSize: 29, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+                playerNameB:    { x: 3038, y: 1725, fontSize: 79, color: '#000000', align: 'center', baseline: 'middle', font: 'light' },
+                playerCountryB: { x: 3038, y: 1798, fontSize: 29, color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+                title:          { x: 1920, y: 170,  fontSize: 44,  color: '#000000', align: 'center', baseline: 'middle', font: 'regular' },
+                text:           { x: 1910, y: 998, fontSize: 192, align: 'center', baseline: 'middle', font: 'regular', letterSpacing: -10 },
+                characterPercent: { x: 2022, y: 1017, fontSize: 113, align: 'left', baseline: 'middle', font: 'light' },
+                arc:            { x: 1920, y: 980, radius: 307.5, strokeWidth: 33.5 },
+                triangle:       { size: 77, offsetX: 385, cornerRadius: 7 },
+            }
+        }
     }
 };
+
+// Helper: return the active aspect-ratio config
+function getActiveConfig() {
+    const ratioConfig = CONFIG.ASPECT_RATIOS[state.aspectRatio];
+    return {
+        exportWidth:        ratioConfig.exportWidth,
+        exportHeight:       ratioConfig.exportHeight,
+        previewAspectRatio: ratioConfig.previewAspectRatio,
+        background:         ratioConfig.background,
+        layout:             ratioConfig.layout
+    };
+}
 
 // State management
 const state = {
     tournamentType: 'men',
+    aspectRatio: '16:9',
     selectedImageA: null,
     selectedImageB: null,
     selectedPlayerA: null,
@@ -58,6 +92,7 @@ const state = {
 // DOM elements
 const elements = {
     tournamentType: document.getElementById('tournament-type'),
+    aspectRatioSelect: document.getElementById('aspect-ratio-select'),
     dropdownA: document.getElementById('dropdown-a'),
     dropdownB: document.getElementById('dropdown-b'),
     dropdownAInput: document.getElementById('dropdown-a-input'),
@@ -163,6 +198,13 @@ function setupEventListeners() {
         populateDropdowns();
         preloadImages();
         validateAndUpdateNumericValue();
+        updatePreview();
+    });
+
+    // Aspect ratio change
+    elements.aspectRatioSelect.addEventListener('change', (e) => {
+        state.aspectRatio = e.target.value;
+        preloadImages();
         updatePreview();
     });
 
@@ -379,8 +421,8 @@ function closeDropdown(key) {
 }
 
 function preloadImages() {
-    // Only preload the background image
-    const imagesToLoad = [CONFIG.BACKGROUND_IMAGE];
+    // Preload all background images so switching is instant
+    const imagesToLoad = Object.values(CONFIG.ASPECT_RATIOS).map(r => r.background);
     
     let loadedCount = 0;
     const totalImages = imagesToLoad.length;
@@ -442,17 +484,19 @@ function loadImage(src) {
 async function updatePreview() {
     const canvas = elements.previewCanvas;
     const ctx = canvas.getContext('2d');
+    const activeConfig = getActiveConfig();
     
-    // Calculate preview dimensions maintaining 16:9 aspect ratio
+    // Calculate preview dimensions based on active aspect ratio
     const containerWidth = canvas.parentElement.clientWidth;
     const previewWidth = containerWidth;
-    const previewHeight = previewWidth / CONFIG.PREVIEW_ASPECT_RATIO;
+    const previewHeight = previewWidth / activeConfig.previewAspectRatio;
     
     canvas.width = previewWidth;
     canvas.height = previewHeight;
     
     // Calculate scale factor
-    const scale = previewWidth / CONFIG.EXPORT_WIDTH;
+    const scale = previewWidth / activeConfig.exportWidth;
+    const layout = activeConfig.layout;
     
     // Clear canvas
     ctx.fillStyle = '#cccccc';
@@ -460,7 +504,7 @@ async function updatePreview() {
     
     try {
         // Draw background
-        const bgImage = await loadImage(CONFIG.BACKGROUND_IMAGE);
+        const bgImage = await loadImage(activeConfig.background);
         ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
     } catch (error) {
         console.warn('Background image not loaded:', error.message);
@@ -473,33 +517,31 @@ async function updatePreview() {
     if (state.selectedImageA) {
         try {
             const imgA = await loadImage(state.selectedImageA);
-            const layout = CONFIG.LAYOUT.imageA;
-            drawCircularImage(ctx, imgA, layout, scale, layout.strokeColor, layout.strokeWidth);
+            drawCircularImage(ctx, imgA, layout.imageA, scale, layout.imageA.strokeColor, layout.imageA.strokeWidth);
         } catch (error) {
             console.warn('Image A not loaded:', error.message);
-            drawPlaceholder(ctx, CONFIG.LAYOUT.imageA, scale, '1');
+            drawPlaceholder(ctx, layout.imageA, scale, '1');
         }
     } else {
-        drawPlaceholder(ctx, CONFIG.LAYOUT.imageA, scale, '1');
+        drawPlaceholder(ctx, layout.imageA, scale, '1');
     }
     
     // Draw Player 2 (Image B) with circle mask and stroke
     if (state.selectedImageB) {
         try {
             const imgB = await loadImage(state.selectedImageB);
-            const layout = CONFIG.LAYOUT.imageB;
-            drawCircularImage(ctx, imgB, layout, scale, layout.strokeColor, layout.strokeWidth);
+            drawCircularImage(ctx, imgB, layout.imageB, scale, layout.imageB.strokeColor, layout.imageB.strokeWidth);
         } catch (error) {
             console.warn('Image B not loaded:', error.message);
-            drawPlaceholder(ctx, CONFIG.LAYOUT.imageB, scale, '2');
+            drawPlaceholder(ctx, layout.imageB, scale, '2');
         }
     } else {
-        drawPlaceholder(ctx, CONFIG.LAYOUT.imageB, scale, '2');
+        drawPlaceholder(ctx, layout.imageB, scale, '2');
     }
     
     // Draw title text
     const tournament = CONFIG.TOURNAMENTS[state.tournamentType];
-    const titleLayout = CONFIG.LAYOUT.title;
+    const titleLayout = layout.title;
     const fontFamily = state.fontsLoaded ? 'IBM Plex Sans' : 'Arial';
     
     // Get font weight from layout config (handle both 'light' and 'IBMPlexSans-Light.ttf' formats)
@@ -519,8 +561,8 @@ async function updatePreview() {
     
     // Draw player names and countries
     if (state.selectedPlayerA) {
-        const nameLayout = CONFIG.LAYOUT.playerNameA;
-        const countryLayout = CONFIG.LAYOUT.playerCountryA;
+        const nameLayout = layout.playerNameA;
+        const countryLayout = layout.playerCountryA;
         
         // Get font weight from layout config
         const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
@@ -540,8 +582,8 @@ async function updatePreview() {
     }
     
     if (state.selectedPlayerB) {
-        const nameLayout = CONFIG.LAYOUT.playerNameB;
-        const countryLayout = CONFIG.LAYOUT.playerCountryB;
+        const nameLayout = layout.playerNameB;
+        const countryLayout = layout.playerCountryB;
         
         // Get font weight from layout config
         const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
@@ -561,13 +603,13 @@ async function updatePreview() {
     }
     
     // Draw progress arc
-    const arcLayout = CONFIG.LAYOUT.arc;
+    const arcLayout = layout.arc;
     const arcColor = state.winner === 'left' ? '#8A3FFC' : state.winner === 'right' ? '#D2A106' : '#D2A106';
     drawProgressArc(ctx, arcLayout, scale, 100, arcColor, state.winner, 0.25);
     drawProgressArc(ctx, arcLayout, scale, state.numericValue, arcColor, state.winner);
     
     // Draw numeric value text
-    const textLayout = CONFIG.LAYOUT.text;
+    const textLayout = layout.text;
     // Get font weight from layout config
     const textWeight = textLayout.font === 'light' ? '300' : textLayout.font === 'semibold' ? '600' : '400';
     ctx.font = `${textWeight} ${textLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
@@ -586,7 +628,7 @@ async function updatePreview() {
     // Reset letter spacing
     ctx.letterSpacing = '0px';
     // Draw percent character
-    const textPercentLayout = CONFIG.LAYOUT.characterPercent;
+    const textPercentLayout = layout.characterPercent;
     // Get font weight from layout config
     const percentWeight = textPercentLayout.font === 'light' ? '300' : textPercentLayout.font === 'semibold' ? '600' : '400';
     ctx.font = `${percentWeight} ${textPercentLayout.fontSize * scale}px ${fontFamily}, sans-serif`;
@@ -600,12 +642,13 @@ async function updatePreview() {
     );
 
     
-    // Draw winner triangle
+    // Draw winner triangle — offset from arc centre so both sides are symmetric
     if (state.winner) {
-        const triangleLayout = CONFIG.LAYOUT.triangle;
+        const triangleLayout = layout.triangle;
+        const arcCenterX = arcLayout.x;
         const triangleX = state.winner === 'left'
-            ? (textLayout.x - triangleLayout.offsetX) * scale
-            : (textLayout.x + triangleLayout.offsetX) * scale;
+            ? (arcCenterX - triangleLayout.offsetX) * scale
+            : (arcCenterX + triangleLayout.offsetX) * scale;
         drawTriangle(ctx, triangleX, (textLayout.y-20) * scale, triangleLayout.size * scale, state.winner, arcColor, triangleLayout.cornerRadius * scale);
     }
 }
@@ -805,9 +848,12 @@ async function exportPNG() {
             throw new Error('Could not get canvas context');
         }
         
+        const activeConfig = getActiveConfig();
+        const layout = activeConfig.layout;
+
         // Set export dimensions
-        canvas.width = CONFIG.EXPORT_WIDTH;
-        canvas.height = CONFIG.EXPORT_HEIGHT;
+        canvas.width = activeConfig.exportWidth;
+        canvas.height = activeConfig.exportHeight;
         
         // Clear canvas
         ctx.fillStyle = '#ffffff';
@@ -815,7 +861,7 @@ async function exportPNG() {
         
         // Draw background
         try {
-            const bgImage = await loadImage(CONFIG.BACKGROUND_IMAGE);
+            const bgImage = await loadImage(activeConfig.background);
             ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
         } catch (error) {
             console.warn('Background image not available for export:', error.message);
@@ -828,8 +874,7 @@ async function exportPNG() {
         if (state.selectedImageA) {
             try {
                 const imgA = await loadImage(state.selectedImageA);
-                const layout = CONFIG.LAYOUT.imageA;
-                drawCircularImage(ctx, imgA, layout, 1, layout.strokeColor, layout.strokeWidth);
+                drawCircularImage(ctx, imgA, layout.imageA, 1, layout.imageA.strokeColor, layout.imageA.strokeWidth);
             } catch (error) {
                 console.warn('Image A not available for export:', error.message);
             }
@@ -839,8 +884,7 @@ async function exportPNG() {
         if (state.selectedImageB) {
             try {
                 const imgB = await loadImage(state.selectedImageB);
-                const layout = CONFIG.LAYOUT.imageB;
-                drawCircularImage(ctx, imgB, layout, 1, layout.strokeColor, layout.strokeWidth);
+                drawCircularImage(ctx, imgB, layout.imageB, 1, layout.imageB.strokeColor, layout.imageB.strokeWidth);
             } catch (error) {
                 console.warn('Image B not available for export:', error.message);
             }
@@ -848,7 +892,7 @@ async function exportPNG() {
         
         // Draw title text
         const tournament = CONFIG.TOURNAMENTS[state.tournamentType];
-        const titleLayout = CONFIG.LAYOUT.title;
+        const titleLayout = layout.title;
         const fontFamily = state.fontsLoaded ? 'IBM Plex Sans' : 'Arial';
         
         // Get font weight from layout config (handle both 'light' and 'IBMPlexSans-Light.ttf' formats)
@@ -864,8 +908,8 @@ async function exportPNG() {
         
         // Draw player names and countries
         if (state.selectedPlayerA) {
-            const nameLayout = CONFIG.LAYOUT.playerNameA;
-            const countryLayout = CONFIG.LAYOUT.playerCountryA;
+            const nameLayout = layout.playerNameA;
+            const countryLayout = layout.playerCountryA;
             
             // Get font weight from layout config
             const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
@@ -885,8 +929,8 @@ async function exportPNG() {
         }
         
         if (state.selectedPlayerB) {
-            const nameLayout = CONFIG.LAYOUT.playerNameB;
-            const countryLayout = CONFIG.LAYOUT.playerCountryB;
+            const nameLayout = layout.playerNameB;
+            const countryLayout = layout.playerCountryB;
             
             // Get font weight from layout config
             const nameWeight = nameLayout.font === 'light' ? '300' : nameLayout.font === 'semibold' ? '600' : '400';
@@ -906,13 +950,13 @@ async function exportPNG() {
         }
         
         // Draw progress arc
-        const arcLayout = CONFIG.LAYOUT.arc;
+        const arcLayout = layout.arc;
         const arcColor = state.winner === 'left' ? '#8A3FFC' : state.winner === 'right' ? '#D2A106' : '#D2A106';
         drawProgressArc(ctx, arcLayout, 1, 100, arcColor, state.winner, 0.25);
         drawProgressArc(ctx, arcLayout, 1, state.numericValue, arcColor, state.winner);
         
         // Draw numeric value text
-        const textLayout = CONFIG.LAYOUT.text;
+        const textLayout = layout.text;
         // Get font weight from layout config
         const textWeight = textLayout.font === 'light' ? '300' : textLayout.font === 'semibold' ? '600' : '400';
         ctx.font = `${textWeight} ${textLayout.fontSize}px ${fontFamily}, sans-serif`;
@@ -928,7 +972,7 @@ async function exportPNG() {
         ctx.letterSpacing = '0px';
         
         // Draw percent character
-        const textPercentLayout = CONFIG.LAYOUT.characterPercent;
+        const textPercentLayout = layout.characterPercent;
         // Get font weight from layout config
         const percentWeight = textPercentLayout.font === 'light' ? '300' : textPercentLayout.font === 'semibold' ? '600' : '400';
         ctx.font = `${percentWeight} ${textPercentLayout.fontSize}px ${fontFamily}, sans-serif`;
@@ -941,12 +985,13 @@ async function exportPNG() {
             textPercentLayout.y
         );
         
-        // Draw winner triangle
+        // Draw winner triangle — offset from arc centre so both sides are symmetric
         if (state.winner) {
-            const triangleLayout = CONFIG.LAYOUT.triangle;
+            const triangleLayout = layout.triangle;
+            const arcCenterX = arcLayout.x;
             const triangleX = state.winner === 'left'
-                ? textLayout.x - triangleLayout.offsetX
-                : textLayout.x + triangleLayout.offsetX;
+                ? arcCenterX - triangleLayout.offsetX
+                : arcCenterX + triangleLayout.offsetX;
             drawTriangle(ctx, triangleX, textLayout.y, triangleLayout.size, state.winner, arcColor, triangleLayout.cornerRadius);
         }
         
